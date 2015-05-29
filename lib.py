@@ -76,3 +76,4 @@ def make_solution(theta, i, m, r, g):
 
 def make_step(theta, dt, i, m, r, g):
     s = theta + dt*make_solution(theta, i, m, r, g)
+    return s
