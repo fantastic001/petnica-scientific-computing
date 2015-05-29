@@ -1,6 +1,9 @@
-from lib import make_matrix 
+from lib import *
+import matplotlib.pyplot as plt
+import numpy as np 
 
-n = input("Enter N: ")
+
+n = int(input("Enter N: "))
 
 m = [] 
 i = [] 
@@ -8,13 +11,15 @@ g = 9.81
 r = 1 
 dt = 1
 theta = [] 
-
+w = [] 
 for k in range(n):
-    mm = input("M of %d: " % k)
-    ii = input("I of %d: " % k)
+    mm = float(input("M of %d: " % k))
+    ii = float(input("I of %d: " % k))
+    ww = float(input("Angular velocity for %d: " % k))
     m.append(mm)
     i.append(ii)
-    ttt = input("theta of %d: " % k)
+    w.append(ww)
+    ttt = float(input("theta of %d: " % k))
     theta.append(ttt)
 
 m = np.array(m)
@@ -25,6 +30,8 @@ y = []
 
 for t in range(2000):
     y.append(theta) 
-    theta = make_step(theta, dt, i, m, r, g)
+    theta, w = make_step(theta, dt, i, m, r, g, w)
 
+plt.plot(y, np.sin(y))
 
+plt.show()

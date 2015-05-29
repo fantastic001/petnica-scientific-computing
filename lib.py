@@ -1,6 +1,7 @@
 
 import math 
 import numpy as np 
+import numpy.linalg as linalg
 import matplotlib.pyplot as plt
 
 def pre_plot_points(x):
@@ -74,6 +75,7 @@ def make_solution(theta, i, m, r, g):
         s.append(x[k])
     return np.array(s)
 
-def make_step(theta, dt, i, m, r, g):
-    s = theta + dt*make_solution(theta, i, m, r, g)
-    return s
+def make_step(theta, dt, i, m, r, g, w):
+    v = w + dt*make_solution(theta, i, m, r, g)
+    s = theta + v*dt
+    return (s,v)
