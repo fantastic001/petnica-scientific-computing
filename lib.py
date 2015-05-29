@@ -41,3 +41,38 @@ def vector_direction(x):
     x: vector to determine direction
     """
     return x / (math.sqrt(x.dot(x)))
+
+def make_matrix(theta, i, R):
+    n = len(theta)
+    A = np.zeros([2*n, 2*n])
+
+    for k in range(n):
+        A[k][k] = 1
+    for k in range(n-1):
+        A[k][k+1] = - math.cos(theta[k+1])
+    for k in range(n):
+        A[n+k][n+k] = -i[k] / R
+    for k in range(n-1):
+        A[n+k][k+1] = math.sin(theta[k+1])
+    return A
+
+def make_b_vector(m, g, theta):
+    n = len(m)
+    b = np.zeros(2*n)
+    for i in range(n):
+        b[i] = math.cos(theta[i]) * g*m[i]
+        b[n + i] = math.sin(theta[i]) * g*m[i]
+    return b
+
+def make_solution(theta, i, m, r, g):
+    n = len(m)
+    A= make_matrix(theta, i, r)
+    b = make_b_vector(m, g, theta)
+    x = linalg.solve(A, b)
+    s = []
+    for k in range(n, 2*n):
+        s.append(x[k])
+    return np.array(s)
+
+def make_step(theta, dt, i, m, r, g):
+    s = theta + dt*make_solution(theta, i, m, r, g)
