@@ -33,13 +33,16 @@ class EulerIntegrator(BaseIntegrator):
         if t/dt != steps:
             raise ValueError("Specify dt such that it gives integer number of steps")
         time = 0 
+        time_axis = []
         x.append(x0)
         v.append(v0)
         for step in range(steps):
+           time_axis.append(time)
            time += dt
            s,w = self.make_step(x[-1], v[-1], time, dt, a)
            x.append(s)
            v.append(w)
-        return (x, v)
+        time_axis.append(time)
+        return (time_axis, x, v)
 
 

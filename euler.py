@@ -3,22 +3,18 @@ import numpy as np
 
 import matplotlib.pyplot as plt 
 
+from lib.integrators import EulerIntegrator
+
 dt = 0.001
 
-def dy(t, y):
-    return 2*y
+def dy(y, v, t):
+    return 2
 
-y = []
-t = np.arange(0, 20, dt)
+euler = EulerIntegrator()
 
-for n in t:
-    if n == 0: 
-        y.append(1)
-        continue
-    y.append(y[-1] + dt*dy(n, y[-1]))
+t, y, v = euler.integrate(0, 0, dy, 20, dt)
 
 plt.plot(t,y)
-plt.plot(t, math.e**(2*t))
+plt.plot(t, np.array(t)**2)
 plt.show()
-b
 #print(y)
