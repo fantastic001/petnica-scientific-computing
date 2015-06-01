@@ -2,44 +2,85 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import math
 
+from lib.vectors import * 
+from lib.integrators import * 
+
 G = 6.67e-11
 
-h = 0.001
-def calculate_acc(x, t):
-    m = 2
-    -(G*m/(x[0]**2 + x[1]**2)) * (x/match.sqrt(x.dot(x)))
+N = int(input("Input number of bodies: "))
+m = [] 
+r = []
+for i in range(N):
+    m.append(float(input("Input mass of %d" % i)))
+    bx, by = (float(input("Input x coordinates for %d: " % i)), float(input("Input y coordinates for %d: " % i)))
+    r.append(np.array([bx, by]))
+
+def calculate_acc(x, v, t):
+    a = np.array([0,0])
+    r2 = 0
+    for i in range(N):
+        a0 = ((G*m[i])/(np.sum((x - r[i])**2))) * unit_direction(r[i] - x)
+        print(G*m[i])
+        r2 = np.sum((x - r[i])**2)
+        print(r2)
+        print(unit_direction(r[i] - x))
+        print(a0)
+        a = a + a0
+    print(a)
+    return a
 
 
-def gravity(x, t):
-    return np.array([0, -9.81])
 
-def compute_path(x0, v0, a, t, dt):
-    x = []
-    v = []
-    for i in np.arange(0, t, dt):
-        if i == 0:
-            x.append(x0)
-            v.append(v0)
-            continue 
-        v.append(v[-1] + dt*a(x[-1], t))
-        x.append(x[-1] + np.array(v[-1])*dt)
-    return x 
-
+dt = float(input("Input time step: "))
 x0 = np.array([0,0])
-v0 = np.array([1,1])
+V = float(input("Input speed"))
 
-x = compute_path(x0, v0, gravity, 100, 0.01)
-print(x)
+integrator = EulerIntegrator()
 
-xt = []
-yt = [] 
 
-for n in x: 
-    if n[1] < 0:
-        break
-    xt.append(n[0])
-    yt.append(n[1])
+delta_angle = 0.314
+x_ref = float(input("Input target x: ")) 
+y_ref = float(input("Input target y: "))
+reference = np.array([x_ref, y_ref])
+min_r = 1e+20
+min_angle = 0
+solution = None
+solution_0 = None
+for angle in np.arange(0, 3.14, delta_angle):
+    print("Calculation for %f" % angle)
+    v0 = V * np.array([np.cos(angle), np.sin(angle)])
+    t, x, v = integrator.integrate(x0, v0, calculate_acc, 10, dt)
+    if angle == 0: 
+        solution_0 = x
+    minimum = 1e+20 
+    for xx in x:
+        dis = math.sqrt(np.sum((xx - reference)**2)) 
+        if dis < minimum:
+            minimum = dis
+    print("Minimal distance: %f" % minimum)
+    if minimum < min_r:
+        min_r = minimum 
+        min_angle = angle
+        solution = x
 
-plt.plot(xt,yt, "o")
+print("Angle: %f" % min_angle)
+i = 0
 
+plt.figure()
+plt.title("Minimal solution")
+for ss in solution:
+    #print("\rPlotting: %d%%    " % (100*i / len(solution))), 
+    p_x = ss[0]
+    p_y = ss[1]
+    plt.plot(p_x, p_y, "o")
+    i += 1 
+
+plt.figure()
+plt.title("For angle 0")
+for ss in solution_0:
+    #print("\rPlotting: %d%%    " % (100*i / len(solution))), 
+    p_x = ss[0]
+    p_y = ss[1]
+    plt.plot(p_x, p_y, "o")
+    i += 1 
 plt.show()
