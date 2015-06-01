@@ -38,6 +38,8 @@ V = float(input("Input speed"))
 integrator = EulerIntegrator()
 
 
+T = float(input("Time bound: "))
+
 delta_angle = 0.314
 x_ref = float(input("Input target x: ")) 
 y_ref = float(input("Input target y: "))
@@ -49,7 +51,7 @@ solution_0 = None
 for angle in np.arange(0, 3.14, delta_angle):
     print("Calculation for %f" % angle)
     v0 = V * np.array([np.cos(angle), np.sin(angle)])
-    t, x, v = integrator.integrate(x0, v0, calculate_acc, 10, dt)
+    t, x, v = integrator.integrate(x0, v0, calculate_acc, T, dt)
     if angle == 0: 
         solution_0 = x
     minimum = 1e+20 
