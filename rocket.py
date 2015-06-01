@@ -4,6 +4,7 @@ import math
 
 from lib.vectors import * 
 from lib.integrators import * 
+from lib.plot import * 
 
 G = 6.67e-11
 
@@ -70,19 +71,10 @@ i = 0
 
 plt.figure()
 plt.title("Minimal solution")
-for ss in solution:
-    #print("\rPlotting: %d%%    " % (100*i / len(solution))), 
-    p_x = ss[0]
-    p_y = ss[1]
-    plt.plot(p_x, p_y, "o")
-    i += 1 
+plot_path(solution)
 
 plt.figure()
 plt.title("For angle 0")
-for ss in solution_0:
-    #print("\rPlotting: %d%%    " % (100*i / len(solution))), 
-    p_x = ss[0]
-    p_y = ss[1]
-    plt.plot(p_x, p_y, "o")
-    i += 1 
+plot_path(solution_0)
+
 plt.show()
